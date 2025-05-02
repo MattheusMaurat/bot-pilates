@@ -8,6 +8,8 @@ app = Flask(__name__)
 ZAPI_INSTANCE_URL = os.getenv('ZAPI_INSTANCE_URL')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
+print("🔍 ZAPI_INSTANCE_URL carregada:", ZAPI_INSTANCE_URL)
+
 def gerar_resposta(mensagem_usuario):
     headers = {
         "Authorization": f"Bearer " + OPENAI_API_KEY,
@@ -76,3 +78,5 @@ def webhook():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
+
