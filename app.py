@@ -37,7 +37,10 @@ def enviar_resposta(numero, texto):
         "message": texto
     }
     print("📤 ENVIANDO PARA ZAPI:", payload)
-    headers = {"Content-Type": "application/json"}
+    headers = {
+    "Content-Type": "application/json",
+    "Client-Token": "FB040C96AFF5CD2CDF78E177"  # forçando o token manualmente
+}
     resposta = requests.post(f"{ZAPI_INSTANCE_URL}/send-text", json=payload, headers=headers)
     print("📥 RESPOSTA DA ZAPI:", resposta.text)
 
