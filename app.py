@@ -42,6 +42,24 @@ def enviar_resposta(numero, texto):
 @app.route('/webhook', methods=['POST'])
 def webhook():
     dados = request.get_json()
+
+     # Ignora grupos
+    if dados.get('isGroup'):
+        print("❌ Mensagem ignorada: veio de grupo.")
+        return jsonify({"status": "ignored"})
+
+    mensagem = dados.get('text', {}).get('message', '')
+    numero = dados.get('phone', '')
+
+    print("🔸 Mensagem recebida:", mensagem)
+    print("🔸 Número recebido:", numero)
+
+    if mensagem and numero:
+        resposta = gerar_resposta(mensagem)
+        print("✅ Resposta gerada:", resposta)
+        enviar_resposta(numero, resposta)
+
+    return jsonify({"status": "ok"})
     print("DADOS RECEBIDOS:", dados)  # 👈 Adiciona esse print
     mensagem = dados.get('text', {}).get('message', '')
     numero = dados.get('phone', '')
