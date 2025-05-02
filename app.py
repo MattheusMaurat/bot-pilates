@@ -10,18 +10,24 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 def gerar_resposta(mensagem_usuario):
     headers = {
-        "Authorization": f"Bearer {OPENAI_API_KEY}",
+        "Authorization": f"Bearer " + OPENAI_API_KEY,
         "Content-Type": "application/json"
     }
     data = {
         "model": "gpt-3.5-turbo",
         "messages": [
-            {"role": "system", "content": "Você é uma especialista em Pilates para mulheres com foco em emagrecimento. Fala de forma acolhedora, motivadora e segura. Sempre tenta ajudar de forma prática."},
+            {"role": "system", "content": "Você é uma especialista em Pilates para mulheres com foco em emagrecimento."},
             {"role": "user", "content": mensagem_usuario}
         ]
     }
     resposta = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=data)
-    return resposta.json()['choices'][0]['message']['content']
+    
+    print("🧠 RESPOSTA DA OPENAI:", resposta.text)  # 👈 Adiciona isso
+
+    try:
+        return resposta.json()['choices'][0]['message']['content']
+    except KeyError:
+        return "Desculpe, algo deu errado ao tentar responder. Tente novamente mais tarde."
 
 def enviar_resposta(numero, texto):
     payload = {
