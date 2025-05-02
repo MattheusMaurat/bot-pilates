@@ -34,8 +34,8 @@ def enviar_resposta(numero, texto):
 def webhook():
     dados = request.get_json()
     print("DADOS RECEBIDOS:", dados)  # 👈 Adiciona esse print
-    mensagem = dados.get('message', {}).get('body', '')
-    numero = dados.get('message', {}).get('phone', '')
+    mensagem = dados.get('text', {}).get('message', '')
+    numero = dados.get('phone', '')
 
     print("Mensagem:", mensagem)       # 👈 Adiciona esse print
     print("Número:", numero)           # 👈 Adiciona esse print
