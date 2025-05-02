@@ -34,7 +34,9 @@ def enviar_resposta(numero, texto):
         "phone": numero,
         "message": texto
     }
-    requests.post(f"{ZAPI_INSTANCE_URL}/send-message", json=payload)
+    print("📤 ENVIANDO PARA ZAPI:", payload)
+    resposta = requests.post(f"{ZAPI_INSTANCE_URL}/send-message", json=payload)
+    print("📥 RESPOSTA DA ZAPI:", resposta.text)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
