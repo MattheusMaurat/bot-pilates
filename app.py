@@ -44,11 +44,10 @@ def enviar_resposta(numero, texto):
 
     headers = {
         "Content-Type": "application/json",
-        "Client-Token": ZAPI_CLIENT_TOKEN  # ou hardcoded se preferir
+        "Client-Token": ZAPI_CLIENT_TOKEN
     }
 
-    # 🔥 URL CORRETA
-    url_envio = f"https://api.z-api.io/instances/3E09C0B8339620CE12EDA622FD8B21DA/send-text"
+    url_envio = "https://api.z-api.io/instances/3E09C0B8339620CE12EDA622FD8B21DA/send-message"
 
     print("📤 URL final:", url_envio)
     print("📤 Payload:", payload)
