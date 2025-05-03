@@ -31,6 +31,12 @@ def gerar_resposta(mensagem_usuario):
     except KeyError:
         return "Desculpe, algo deu errado ao tentar responder. Tente novamente mais tarde."
 
+
+
+import os
+
+ZAPI_CLIENT_TOKEN = os.getenv("ZAPI_CLIENT_TOKEN")   
+
 def enviar_resposta(numero, texto):
     payload = {
         "phone": numero,
@@ -39,7 +45,7 @@ def enviar_resposta(numero, texto):
 
     headers = {
         "Content-Type": "application/json",
-        "Client-Token": "FB040C96AFF5CD2CDF78E177"  # Coloque seu token aqui manualmente
+        "Client-Token": ZAPI_CLIENT_TOKEN
     }
 
     print("📤 URL final:", ZAPI_INSTANCE_URL)
