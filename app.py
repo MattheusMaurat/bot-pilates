@@ -2,6 +2,10 @@
 from flask import Flask, request, jsonify
 import requests
 import os
+import os
+
+ZAPI_CLIENT_TOKEN = os.getenv("ZAPI_CLIENT_TOKEN")
+print("🔍 TOKEN CARREGADO:", ZAPI_CLIENT_TOKEN)
 
 app = Flask(__name__)
 
@@ -31,11 +35,6 @@ def gerar_resposta(mensagem_usuario):
     except KeyError:
         return "Desculpe, algo deu errado ao tentar responder. Tente novamente mais tarde."
 
-
-
-import os
-
-ZAPI_CLIENT_TOKEN = os.getenv("ZAPI_CLIENT_TOKEN")   
 
 def enviar_resposta(numero, texto):
     payload = {
