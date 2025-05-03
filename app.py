@@ -77,19 +77,6 @@ def webhook():
         enviar_resposta(numero, resposta)
 
     return jsonify({"status": "ok"})
-    print("DADOS RECEBIDOS:", dados)  # 👈 Adiciona esse print
-    mensagem = dados.get('text', {}).get('message', '')
-    numero = dados.get('phone', '')
-
-    print("Mensagem:", mensagem)       # 👈 Adiciona esse print
-    print("Número:", numero)           # 👈 Adiciona esse print
-
-    if mensagem and numero:
-        resposta = gerar_resposta(mensagem)
-        print("Resposta gerada:", resposta)  # 👈 Adiciona esse print
-        enviar_resposta(numero, resposta)
-
-    return jsonify({"status": "ok"})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
