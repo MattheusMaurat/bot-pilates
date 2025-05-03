@@ -44,17 +44,21 @@ def enviar_resposta(numero, texto):
 
     headers = {
         "Content-Type": "application/json",
-        "Client-Token": ZAPI_CLIENT_TOKEN
+        "Client-Token": ZAPI_CLIENT_TOKEN  # ou hardcoded se preferir
     }
 
-    url_envio = f"{ZAPI_INSTANCE_URL}/send-text"
-    
+    # 🔥 URL CORRETA
+    url_envio = f"https://api.z-api.io/instances/3E09C0B8339620CE12EDA622FD8B21DA/send-text"
+
     print("📤 URL final:", url_envio)
     print("📤 Payload:", payload)
     print("📤 Headers:", headers)
 
-    resposta = requests.post(url_envio, json=payload, headers=headers)
-    print("📥 RESPOSTA DA ZAPI:", resposta.text)
+    try:
+        resposta = requests.post(url_envio, json=payload, headers=headers)
+        print("📥 RESPOSTA DA ZAPI:", resposta.text)
+    except Exception as e:
+        print("❌ Erro ao enviar requisição:", str(e))
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
