@@ -43,17 +43,17 @@ def enviar_resposta(numero, texto):
     }
 
     headers = {
-    "Content-Type": "application/json",
-    "Client-Token": os.getenv("ZAPI_CLIENT_TOKEN")
-}
-    print("📤 URL final:", ZAPI_INSTANCE_URL)
+        "Content-Type": "application/json",
+        "Client-Token": ZAPI_CLIENT_TOKEN
+    }
+
+    url_envio = f"{ZAPI_INSTANCE_URL}/send-text"
+    
+    print("📤 URL final:", url_envio)
     print("📤 Payload:", payload)
     print("📤 Headers:", headers)
-    resposta = requests.post(
-    f"{ZAPI_INSTANCE_URL}/send-text",
-    json=payload,
-    headers=headers
-)
+
+    resposta = requests.post(url_envio, json=payload, headers=headers)
     print("📥 RESPOSTA DA ZAPI:", resposta.text)
 
 @app.route('/webhook', methods=['POST'])
