@@ -37,7 +37,7 @@ def gerar_resposta(mensagem_usuario):
 
 
 def enviar_resposta(numero, texto):
-    url = "https://api.z-api.io/instances/3E09C0B8339620CE12EDA622FD8B21DA/token/FB040C96AFF5CD2CDF78E177/send-text"
+    url = "https://api.z-api.io/instances/3E09C0B8339620CE12EDA622FD8B21DA/send-text"
 
     payload = {
         "phone": numero,
@@ -45,12 +45,9 @@ def enviar_resposta(numero, texto):
     }
 
     headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Client-Token": "FB040C96AFF5CD2CDF78E177"
     }
-
-    print("📤 URL final:", url)
-    print("📤 Payload:", payload)
-    print("📤 Headers:", headers)
 
     resposta = requests.post(url, json=payload, headers=headers)
     print("📥 RESPOSTA DA ZAPI:", resposta.text)
