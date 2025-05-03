@@ -43,10 +43,9 @@ def enviar_resposta(numero, texto):
     }
 
     headers = {
-        "Content-Type": "application/json",
-        "Client-Token": ZAPI_CLIENT_TOKEN
-    }
-
+    "Content-Type": "application/json",
+    "Client-Token": os.getenv("ZAPI_CLIENT_TOKEN")
+}
     print("📤 URL final:", ZAPI_INSTANCE_URL)
     print("📤 Payload:", payload)
     print("📤 Headers:", headers)
