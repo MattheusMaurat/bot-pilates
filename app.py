@@ -38,7 +38,8 @@ def enviar_resposta(numero, texto):
     }
 
     headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Client-Token": "FB040C96AFF5CD2CDF78E177"  # Coloque seu token aqui manualmente
     }
 
     print("📤 URL final:", ZAPI_INSTANCE_URL)
