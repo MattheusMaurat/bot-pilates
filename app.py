@@ -59,30 +59,30 @@ def webhook():
     dados = request.get_json()
     print("📥 DADOS RECEBIDOS:", dados)
 
-    if dados.get('event') != 'MESSAGES_UPSERT':
-        print("❌ Evento ignorado:", dados.get('event'))
+    evento = dados.get('event')
+    if evento != 'MESSAGES_UPSERT':
+        print("❌ Evento ignorado:", evento)
         return jsonify({"status": "ignored"})
 
     mensagens = dados.get('data', {}).get('messages', [])
     if not mensagens:
+        print("❌ Nenhuma mensagem encontrada.")
         return jsonify({"status": "no_messages"})
 
-    for msg in mensagens:
-        if msg['key'].get('fromMe'):
-            continue  # Ignora mensagens enviadas por você mesmo
+    mensagem = mensagens[0]
+    texto = mensagem.get('text', {}).get('body', '')
+    numero = mensagem.get('from', '')
 
-        numero = msg['key']['remoteJid'].split('@')[0]
-        texto = msg['message'].get('conversation', '')
+    print("📩 Mensagem recebida:", texto)
+    print("📞 Número:", numero)
 
-        print("🔸 Mensagem recebida:", texto)
-        print("🔸 Número recebido:", numero)
-
-        if texto and numero:
-            resposta = gerar_resposta(texto)
-            print("✅ Resposta gerada:", resposta)
-            enviar_resposta(numero, resposta)
+    if texto and numero:
+        resposta = gerar_resposta(texto)
+        print("✅ Resposta gerada:", resposta)
+        enviar_resposta(numero, resposta)
 
     return jsonify({"status": "ok"})
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
