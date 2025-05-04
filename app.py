@@ -35,15 +35,9 @@ def gerar_resposta(mensagem_usuario):
 def enviar_resposta(numero, mensagem):
     url = f"{EVOLUTION_API_URL}/message/sendText/{EVOLUTION_INSTANCE_ID}"
     payload = {
-        "number": numero.split("@")[0],
-        "options": {
-            "delay": 0,
-            "presence": "composing"
-        },
-        "textMessage": {
-            "text": mensagem
-        }
-    }
+    "number": numero.split("@")[0],
+    "text": mensagem
+}
     headers = {
         "Content-Type": "application/json",
         "apikey": EVOLUTION_API_KEY
