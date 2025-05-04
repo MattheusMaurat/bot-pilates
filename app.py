@@ -52,15 +52,6 @@ def enviar_resposta(numero, mensagem):
     resposta = requests.post(url, json=payload, headers=headers)
     print("📥 RESPOSTA DA EVOLUTION:", resposta.text)
 
-@app.post("/webhook")
-def handle_message(request: Request):
-    payload = request.json()
-    remote_jid = payload['data']['key']['remoteJid']
-
-    # ✅ FILTRO PARA IGNORAR GRUPOS
-    if remote_jid.endswith("@g.us"):
-        print("Mensagem de grupo ignorada.")
-        return {"status": "ok"}
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -77,6 +68,11 @@ def webhook():
     mensagem = mensagem_info.get("message", {}).get("conversation", "")
     numero = mensagem_info.get("key", {}).get("remoteJid", "")
     from_me = mensagem_info.get("key", {}).get("fromMe", True)
+
+    # Ignora mensagens de grupos
+    if numero.endswith("@g.us"):
+        print("❌ Ignorado: mensagem de grupo.")
+        return jsonify({"status": "ignored"})
 
     # Ignora mensagens enviadas por você mesmo
     if from_me:
