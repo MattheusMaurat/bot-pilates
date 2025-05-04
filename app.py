@@ -4,17 +4,11 @@ import os
 
 app = Flask(__name__)
 
-# Carrega variáveis de ambiente
-EVOLUTION_TOKEN = os.getenv("EVOLUTION_TOKEN")
-EVOLUTION_INSTANCE_URL = os.getenv("EVOLUTION_INSTANCE_URL")
+EVOLUTION_API_URL = os.getenv("EVOLUTION_API_URL")  # Ex: https://seudominio.com.br
+EVOLUTION_INSTANCE_ID = os.getenv("EVOLUTION_INSTANCE_ID")  # ID da instância criada
+EVOLUTION_API_KEY = os.getenv("EVOLUTION_API_KEY")  # API Key da Evolution
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-EVOLUTION_API_URL = os.getenv("EVOLUTION_API_URL")
-INSTANCE_ID = os.getenv("INSTANCE_ID")
 
-print("🔐 EVOLUTION_TOKEN carregado:", EVOLUTION_TOKEN)
-print("🌐 EVOLUTION_INSTANCE_URL carregada:", EVOLUTION_INSTANCE_URL)
-
-# Função que gera resposta com ChatGPT
 def gerar_resposta(mensagem_usuario):
     headers = {
         "Authorization": f"Bearer {OPENAI_API_KEY}",
@@ -27,47 +21,57 @@ def gerar_resposta(mensagem_usuario):
             {"role": "user", "content": mensagem_usuario}
         ]
     }
+
     resposta = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=data)
     print("🧠 RESPOSTA DA OPENAI:", resposta.text)
 
     try:
-        return resposta.json()['choices'][0]['message']['content']
-    except KeyError:
-        return "Desculpe, algo deu errado ao tentar responder. Tente novamente mais tarde."
+        return resposta.json()["choices"][0]["message"]["content"]
+    except:
+        return "Desculpe, houve um erro ao gerar a resposta."
 
-# Função para enviar resposta via Evolution
-
-def enviar_resposta(numero, texto):
-    url = f"{EVOLUTION_API_URL}/message/sendText/{INSTANCE_ID}"  # Substitua com sua URL e ID de instância
-
+def enviar_resposta(numero, mensagem):
+    url = f"{EVOLUTION_API_URL}/message/sendText/{EVOLUTION_INSTANCE_ID}"
     payload = {
-        "number": numero,
-        "text": texto,
-        "delay": 1200,
-        "presence": "composing"
+        "number": numero.split("@")[0],
+        "options": {
+            "delay": 0,
+            "presence": "composing"
+        },
+        "textMessage": {
+            "text": mensagem
+        }
     }
-
     headers = {
         "Content-Type": "application/json",
-        "apikey": EVOLUTION_API_KEY  # Certifique-se de que esta variável de ambiente está definida
+        "apikey": EVOLUTION_API_KEY
     }
 
+    print("📤 Enviando para Evolution:", url)
+    print("📤 Payload:", payload)
     resposta = requests.post(url, json=payload, headers=headers)
     print("📥 RESPOSTA DA EVOLUTION:", resposta.text)
 
-# Webhook
 @app.route('/webhook', methods=['POST'])
 def webhook():
     dados = request.get_json()
     print("📥 DADOS RECEBIDOS:", dados)
 
-    evento = dados.get('event')
-    if evento != 'messages.upsert':
-        print("❌ Evento ignorado:", evento)
+    # Ignora eventos que não são mensagens
+    if dados.get("event") != "messages.upsert":
+        print(f"❌ Evento ignorado: {dados.get('event')}")
         return jsonify({"status": "ignored"})
 
-    mensagem = dados.get('data', {}).get('message', {}).get('conversation', '')
-    numero = dados.get('data', {}).get('key', {}).get('remoteJid', '')
+    # Captura a mensagem e número
+    mensagem_info = dados.get("data", {})
+    mensagem = mensagem_info.get("message", {}).get("conversation", "")
+    numero = mensagem_info.get("key", {}).get("remoteJid", "")
+    from_me = mensagem_info.get("key", {}).get("fromMe", True)
+
+    # Ignora mensagens enviadas por você mesmo
+    if from_me:
+        print("❌ Ignorado: mensagem enviada pelo bot.")
+        return jsonify({"status": "ignored"})
 
     print("📩 Mensagem recebida:", mensagem)
     print("📞 Número:", numero)
@@ -78,7 +82,6 @@ def webhook():
         enviar_resposta(numero, resposta)
 
     return jsonify({"status": "ok"})
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
